@@ -274,7 +274,7 @@ require('lazy').setup({
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
   -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -283,6 +283,26 @@ require('lazy').setup({
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
+  {
+    "nvim-tree/nvim-tree.lua",
+    "nvim-tree/nvim-web-devicons"
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+        require("nvim-surround").setup({
+            -- Configuration here, or leave empty to use defaults
+        })
+    end
+  },
+  {
+    "aserowy/tmux.nvim",
+    config = function()
+        return require("tmux").setup()
+    end
+  },
 }, {})
 
 -- [[ Setting options ]]
@@ -294,6 +314,7 @@ vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
+vim.wo.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -586,12 +607,17 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
+  clangd = {},
   -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
+  pyright = {
+    anlysis = {
+      diagnosticMode = "workspace",
+    }
+  },
+  -- jedi_language_server = {},
+  rust_analyzer = {},
   -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  html = { filetypes = { 'html', 'twig', 'hbs'} },
 
   lua_ls = {
     Lua = {
@@ -682,3 +708,12 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- custom thingies
+require("nvim-tree").setup()
+
+vim.keymap.set('i', 'jj', '<Esc>', {})
+vim.keymap.set('n', '<leader>w', ':w<CR>', {silent=true})
+vim.keymap.set('n', '<leader>q', ':q<CR>', {silent=true})
+vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>')
+
