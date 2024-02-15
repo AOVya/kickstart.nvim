@@ -88,7 +88,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -124,7 +124,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -275,6 +275,10 @@ require('lazy').setup({
   --       Uncomment any of the lines below to enable them.
   -- require 'kickstart.plugins.autoformat',
   require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.autoformat',
+  require 'custom.plugins.autopairs',
+  require 'custom.plugins.surround',
+  require 'custom.plugins.tmux',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -286,22 +290,6 @@ require('lazy').setup({
   {
     "nvim-tree/nvim-tree.lua",
     "nvim-tree/nvim-web-devicons"
-  },
-  {
-    "kylechui/nvim-surround",
-    version = "*", -- Use for stability; omit to use `main` branch for the latest features
-    event = "VeryLazy",
-    config = function()
-        require("nvim-surround").setup({
-            -- Configuration here, or leave empty to use defaults
-        })
-    end
-  },
-  {
-    "aserowy/tmux.nvim",
-    config = function()
-        return require("tmux").setup()
-    end
   },
 }, {})
 
@@ -617,7 +605,7 @@ local servers = {
   -- jedi_language_server = {},
   rust_analyzer = {},
   -- tsserver = {},
-  html = { filetypes = { 'html', 'twig', 'hbs'} },
+  html = { filetypes = { 'html', 'twig', 'hbs' } },
 
   lua_ls = {
     Lua = {
@@ -713,7 +701,6 @@ cmp.setup {
 require("nvim-tree").setup()
 
 vim.keymap.set('i', 'jj', '<Esc>', {})
-vim.keymap.set('n', '<leader>w', ':w<CR>', {silent=true})
-vim.keymap.set('n', '<leader>q', ':q<CR>', {silent=true})
+vim.keymap.set('n', '<leader>w', ':w<CR>', { silent = true })
+vim.keymap.set('n', '<leader>q', ':q<CR>', { silent = true })
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>')
-
