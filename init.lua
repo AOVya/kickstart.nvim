@@ -76,6 +76,8 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  'tpope/vim-abolish',
+
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
@@ -200,20 +202,24 @@ require('lazy').setup({
     },
   },
 
+  -- {
+  --   -- Theme inspired by Atom
+  --   'navarasu/onedark.nvim',
+  --   priority = 1000,
+  --   lazy = false,
+  --   config = function()
+  --     require('onedark').setup {
+  --       -- Set a style preset. 'dark' is default.
+  --       style = 'dark', -- dark, darker, cool, deep, warm, warmer, light
+  --     }
+  --     require('onedark').load()
+  --   end,
+  -- },
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    'catppuccin/nvim',
+    name = "catppuccin",
     priority = 1000,
-    lazy = false,
-    config = function()
-      require('onedark').setup {
-        -- Set a style preset. 'dark' is default.
-        style = 'dark', -- dark, darker, cool, deep, warm, warmer, light
-      }
-      require('onedark').load()
-    end,
   },
-
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -221,7 +227,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'auto',
+        theme = 'catppuccin',
         component_separators = '|',
         section_separators = '',
       },
@@ -279,6 +285,7 @@ require('lazy').setup({
   require 'custom.plugins.autopairs',
   require 'custom.plugins.surround',
   require 'custom.plugins.tmux',
+  require 'custom.plugins.golang',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -291,8 +298,26 @@ require('lazy').setup({
     "nvim-tree/nvim-tree.lua",
     "nvim-tree/nvim-web-devicons"
   },
+  {
+    "lervag/vimtex",
+    init = function()
+    end
+  },
+  {
+    "ThePrimeagen/vim-be-good",
+  },
 }, {})
 
+require('go').setup()
+require("catppuccin").setup({
+  flavour = "latte",
+  background = {
+    light = "latte",
+    dark = "mocha",
+  }
+})
+
+vim.cmd.colorscheme "catppuccin-latte"
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -551,8 +576,8 @@ local on_attach = function(_, bufnr)
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-  nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-  nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+  nmap('<leader>af', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+  nmap('<leader>rf', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
@@ -606,13 +631,12 @@ local servers = {
   rust_analyzer = {},
   -- tsserver = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
-
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
       -- NOTE: toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-      -- diagnostics = { disable = { 'missing-fields' } },
+      diagnostics = { disable = { 'missing-fields' } },
     },
   },
 }
@@ -698,9 +722,22 @@ cmp.setup {
 -- vim: ts=2 sts=2 sw=2 et
 
 -- custom thingies
-require("nvim-tree").setup()
+require("nvim-tree").setup({
+  view = {
+    side = "right",
+  },
+})
 
 vim.keymap.set('i', 'jj', '<Esc>', {})
 vim.keymap.set('n', '<leader>w', ':w<CR>', { silent = true })
 vim.keymap.set('n', '<leader>q', ':q<CR>', { silent = true })
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>')
+-- replace a word with the contents of the yank register
+vim.keymap.set('n', 'vsw', "cw<C-r>0<ESC>", {})
+
+require("which-key").register {
+  ["<leader>w"] = { name = "[W]rite", _ = "which_key_ignore" },
+  ["<leader>q"] = { name = "[Q]uit", _ = "which_key_ignore" },
+  ["<leader>e"] = { name = "[E]xplore (Toggle NvimTree)", _ = "which_key_ignore" },
+  ["vsw"] = { name = "[V]im [S]ubstitute [W]ord", _ = "which_key_ignore" },
+}
