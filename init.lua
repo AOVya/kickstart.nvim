@@ -78,11 +78,19 @@ require('lazy').setup({
 
   'tpope/vim-abolish',
 
+  'github/copilot.vim',
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    opts = {
+      inlay_hints = {
+        show_parameter_hints = true,
+        prefix = ' » ',
+        highlight = 'Comment',
+      },
+    },
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
@@ -310,18 +318,25 @@ require('lazy').setup({
 
 require('go').setup()
 require("catppuccin").setup({
-  flavour = "latte",
+  flavour = "frappe",
   background = {
     light = "latte",
-    dark = "mocha",
+    dark = "frappe",
   }
 })
 
-vim.cmd.colorscheme "catppuccin-latte"
+vim.diagnostic.config({
+  underline = true,
+  virtual_text = true,
+  signs = true,
+  update_in_insert = true,
+  severity_sort = true,
+})
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 
+vim.cmd.colorscheme "catppuccin"
 -- Set highlight on search
 vim.o.hlsearch = false
 
@@ -501,8 +516,8 @@ vim.defer_fn(function()
         keymaps = {
           -- You can use the capture groups defined in textobjects.scm
           ['aa'] = '@parameter.outer',
-          ['ia'] = '@parameter.inner',
           ['af'] = '@function.outer',
+          ['ia'] = '@parameter.inner',
           ['if'] = '@function.inner',
           ['ac'] = '@class.outer',
           ['ic'] = '@class.inner',
@@ -734,6 +749,9 @@ vim.keymap.set('n', '<leader>q', ':q<CR>', { silent = true })
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>')
 -- replace a word with the contents of the yank register
 vim.keymap.set('n', 'vsw', "cw<C-r>0<ESC>", {})
+-- keymap to add a blank line on top of the current line without moving the cursor
+vim.keymap.set('n', '<leader>o', 'O<Esc>j', {})
+
 
 require("which-key").register {
   ["<leader>w"] = { name = "[W]rite", _ = "which_key_ignore" },

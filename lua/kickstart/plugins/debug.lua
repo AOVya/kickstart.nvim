@@ -11,8 +11,15 @@ return {
   'mfussenegger/nvim-dap',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
+    -- A necessary dependency which is usually problematic
+    -- if not specific
+    'nvim-neotest/nvim-nio',
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
+    'HiPhish/debugpy.nvim',
+
+    -- Adds inline variable hints
+    'theHamsta/nvim-dap-virtual-text',
 
     -- Installs the debug adapters for you
     'williamboman/mason.nvim',
@@ -82,6 +89,16 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
+    dap.adapters.codelldb = {
+      type = "server",
+      port = "${port}",
+      executable = {
+        command = "codelldb",
+        args = { "--port", "${port}" },
+      },
+    }
+
+    require('nvim-dap-virtual-text').setup()
     -- Install golang specific config
     require('dap-go').setup()
     require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
